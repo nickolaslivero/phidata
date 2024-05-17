@@ -48,14 +48,10 @@ assistant = Assistant(
     {provide key takeaways from the article}
 
     ### References
-    - [Reference 1](link)
-    - [Reference 2](link)
-    - [Reference 3](link)
-
-    ### About the Author
-    {write a made up for yourself, give yourself a cyberpunk name and a title}
-
-    - published on {date} in dd/mm/yyyy
+    - [Title](url)
+    - [Title](url)
+    - [Title](url)
+    </article_format>\
     """
     ),
     markdown=True,
