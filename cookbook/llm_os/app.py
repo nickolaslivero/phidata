@@ -8,7 +8,7 @@ from phi.document.reader.pdf import PDFReader
 from phi.document.reader.website import WebsiteReader
 from phi.utils.log import logger
 
-from assistant import get_llm_os  # type: ignore
+from assistant import get_llm_os
 
 nest_asyncio.apply()
 
@@ -22,7 +22,7 @@ st.markdown("##### :orange_heart: built using [phidata](https://github.com/phida
 
 def main() -> None:
     # Get LLM Model
-    llm_id = st.sidebar.selectbox("Select LLM", options=["gpt-4o", "gpt-4-turbo"]) or "gpt-4o"
+    llm_id = st.sidebar.selectbox("Select LLM", options=["local-llm"]) or "local-llm"
     # Set llm_id in session state
     if "llm_id" not in st.session_state:
         st.session_state["llm_id"] = llm_id

@@ -4,7 +4,7 @@ from phi.llm.openai import OpenAIChat
 from phi.assistant.duckdb import DuckDbAssistant
 
 data_analyst = DuckDbAssistant(
-    llm=OpenAIChat(model="gpt-4o"),
+    llm=OpenAIChat(model="local-llm"),
     semantic_model=json.dumps(
         {
             "tables": [

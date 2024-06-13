@@ -1,5 +1,6 @@
 from typing import Optional, Dict, List, Tuple, Any
 from typing_extensions import Literal
+import requests
 
 from phi.embedder.base import Embedder
 from phi.utils.log import logger
@@ -11,14 +12,61 @@ except ImportError:
     raise ImportError("`openai` not installed")
 
 
-class OpenAIEmbedder(Embedder):
-    model: str = "text-embedding-ada-002"
+class LMStudioEmbedder(Embedder):
+    model: str = "lmstudio-community/Meta-Llama-3-8B-Instruct-GGUF/Meta-Llama-3-8B-Instruct-Q5_K_M.gguf"
+    base_url: str = "http://192.168.0.119:1234/v1"
     dimensions: int = 1536
     encoding_format: Literal["float", "base64"] = "float"
     user: Optional[str] = None
-    api_key: Optional[str] = None
+    request_params: Optional[Dict[str, Any]] = None
+
+    def _response(self, text: str) -> Dict[str, Any]:
+        url = f"{self.base_url}/chat/completions"
+        logger.debug(f"Enviando solicitação para {url} com texto: {text}")
+        request_data = {
+            "model": self.model,
+            "messages": [{"role": "user", "content": text}],
+            "max_tokens": 50,
+            "temperature": 0.7
+        }
+        if self.request_params:
+            request_data.update(self.request_params)
+        response = requests.post(url, json=request_data)
+        logger.debug(f"Resposta do servidor: {response.status_code} - {response.text}")
+        if response.status_code == 200:
+            return response.json()
+        else:
+            raise Exception(f"Falha ao obter resposta do LM Studio: {response.text}")
+
+    def get_embedding(self, text: str) -> List[float]:
+        response = self._response(text)
+        generated_text = response.get('choices', [{}])[0].get('message', {}).get('content', '')
+        try:
+            # Simulação de um vetor de embedding; substituir por lógica real se disponível
+            embedding = [0.0] * self.dimensions
+            logger.debug(f"Texto gerado: {generated_text}")
+            return embedding
+        except Exception as e:
+            logger.warning(e)
+            return []
+
+    def get_embedding_and_usage(self, text: str) -> Tuple[List[float], Optional[Dict]]:
+        response = self._response(text)
+        try:
+            embedding = self.get_embedding(text)
+            usage = response.get("usage", {})
+            return embedding, usage
+        except Exception as e:
+            logger.warning(e)
+            return [], None
+
+
+class OpenAIEmbedder(LMStudioEmbedder):
+    encoding_format: Literal["float", "base64"] = "float"
+    user: Optional[str] = None
+    api_key: Optional[str] = "lm-studio"
     organization: Optional[str] = None
-    base_url: Optional[str] = None
+    base_url: str = "http://192.168.0.119:1234/v1"
     request_params: Optional[Dict[str, Any]] = None
     client_params: Optional[Dict[str, Any]] = None
     openai_client: Optional[OpenAIClient] = None
@@ -38,32 +86,3 @@ class OpenAIEmbedder(Embedder):
         if self.client_params:
             _client_params.update(self.client_params)
         return OpenAIClient(**_client_params)
-
-    def _response(self, text: str) -> CreateEmbeddingResponse:
-        _request_params: Dict[str, Any] = {
-            "input": text,
-            "model": self.model,
-            "encoding_format": self.encoding_format,
-        }
-        if self.user is not None:
-            _request_params["user"] = self.user
-        if self.model.startswith("text-embedding-3"):
-            _request_params["dimensions"] = self.dimensions
-        if self.request_params:
-            _request_params.update(self.request_params)
-        return self.client.embeddings.create(**_request_params)
-
-    def get_embedding(self, text: str) -> List[float]:
-        response: CreateEmbeddingResponse = self._response(text=text)
-        try:
-            return response.data[0].embedding
-        except Exception as e:
-            logger.warning(e)
-            return []
-
-    def get_embedding_and_usage(self, text: str) -> Tuple[List[float], Optional[Dict]]:
-        response: CreateEmbeddingResponse = self._response(text=text)
-
-        embedding = response.data[0].embedding
-        usage = response.usage
-        return embedding, usage.model_dump()

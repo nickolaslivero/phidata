@@ -29,7 +29,7 @@ if not scratch_dir.exists():
 
 
 def get_llm_os(
-    llm_id: str = "gpt-4o",
+    llm_id: str = "local-llm",
     calculator: bool = False,
     ddg_search: bool = False,
     file_tools: bool = False,

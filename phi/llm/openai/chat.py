@@ -28,6 +28,26 @@ except ImportError:
     logger.error("`openai` not installed")
     raise
 
+from openai import OpenAI
+
+class LocalLLM:
+    def __init__(self, base_url, api_key):
+        self.client = OpenAI(base_url=base_url, api_key=api_key)
+
+    def generate_response(self, messages):
+        completion = self.client.chat.completions.create(
+            model="QuantFactory/Meta-Llama-3-8B-Instruct-GGUF",
+            messages=messages,
+            temperature=0.7,
+            stream=True,
+        )
+        response = ""
+        for chunk in completion:
+            if chunk.choices[0].delta.content:
+                response += chunk.choices[0].delta.content
+        return response
+
+
 
 class OpenAIChat(LLM):
     name: str = "OpenAIChat"
@@ -49,9 +69,9 @@ class OpenAIChat(LLM):
     extra_query: Optional[Any] = None
     request_params: Optional[Dict[str, Any]] = None
     # -*- Client parameters
-    api_key: Optional[str] = None
+    api_key: Optional[str] = "lm-studio"
     organization: Optional[str] = None
-    base_url: Optional[Union[str, httpx.URL]] = None
+    base_url: Optional[Union[str, httpx.URL]] = "http://192.168.0.119:1234/v1"
     timeout: Optional[float] = None
     max_retries: Optional[int] = None
     default_headers: Optional[Any] = None
@@ -73,7 +93,7 @@ class OpenAIChat(LLM):
 
         _client_params: Dict[str, Any] = {}
         if self.api_key:
-            _client_params["api_key"] = self.api_key
+            _client_params["api_key"] = "lm-studio"
         if self.organization:
             _client_params["organization"] = self.organization
         if self.base_url:
@@ -201,11 +221,15 @@ class OpenAIChat(LLM):
         return _dict
 
     def invoke(self, messages: List[Message]) -> ChatCompletion:
+        """
         return self.get_client().chat.completions.create(
             model=self.model,
             messages=[m.to_dict() for m in messages],  # type: ignore
             **self.api_kwargs,
         )
+        """
+        llm = LocalLLM(base_url="http://192.168.0.119:1234/v1", api_key="lm-studio")
+        return llm.generate_response([m.to_dict() for m in messages])
 
     async def ainvoke(self, messages: List[Message]) -> Any:
         return await self.get_async_client().chat.completions.create(
