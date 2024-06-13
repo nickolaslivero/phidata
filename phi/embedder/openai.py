@@ -45,11 +45,11 @@ class LMStudioEmbedder(Embedder):
             data = response.get('data', [])
             if not data or 'embedding' not in data[0]:
                 raise ValueError("Resposta inválida, 'embedding' não encontrado.")
-            
+
             embedding = data[0]['embedding']
             if len(embedding) != self.dimensions:
                 raise ValueError(f"Dimensões incorretas: esperadas {self.dimensions}, obtidas {len(embedding)}")
-            
+
             logger.debug(f"Embedding obtido: {embedding}")
             return embedding
         except Exception as e:

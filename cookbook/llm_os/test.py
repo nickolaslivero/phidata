@@ -20,14 +20,14 @@ while True:
     )
 
     new_message = {"role": "assistant", "content": ""}
-    
+
     for chunk in completion:
         if chunk.choices[0].delta.content:
             print(chunk.choices[0].delta.content, end="", flush=True)
             new_message["content"] += chunk.choices[0].delta.content
 
     history.append(new_message)
-    
+
     # Uncomment to see chat history
     # import json
     # gray_color = "\033[90m"
