@@ -92,6 +92,7 @@ module = [
   "firecrawl.*",
   "duckduckgo_search.*",
   "groq.*",
+  "google.*",
   "kubernetes.*",
   "lancedb.*",
   "langchain.*",
