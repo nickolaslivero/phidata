@@ -149,7 +149,7 @@ def get_personalized_assistant(
             vector_db=PgVector2(
                 db_url=db_url,
                 collection="personalized_assistant_documents",
-                embedder=OpenAIEmbedder(model="text-embedding-3-small", dimensions=1536),
+                embedder=OpenAIEmbedder(model="text-embedding-3-small", dimensions=768),
             ),
             # 3 references are added to the prompt
             num_documents=3,

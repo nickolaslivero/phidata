@@ -30,6 +30,8 @@ except ImportError:
 
 from openai import OpenAI
 
+from root_server_ip import SERVER_IP
+
 class LocalLLM:
     def __init__(self, base_url, api_key):
         self.client = OpenAI(base_url=base_url, api_key=api_key)
@@ -71,7 +73,7 @@ class OpenAIChat(LLM):
     # -*- Client parameters
     api_key: Optional[str] = "lm-studio"
     organization: Optional[str] = None
-    base_url: Optional[Union[str, httpx.URL]] = "http://192.168.0.119:1234/v1"
+    base_url: Optional[Union[str, httpx.URL]] = SERVER_IP
     timeout: Optional[float] = None
     max_retries: Optional[int] = None
     default_headers: Optional[Any] = None
@@ -228,7 +230,7 @@ class OpenAIChat(LLM):
             **self.api_kwargs,
         )
         """
-        llm = LocalLLM(base_url="http://192.168.0.119:1234/v1", api_key="lm-studio")
+        llm = LocalLLM(base_url=SERVER_IP, api_key="lm-studio")
         return llm.generate_response([m.to_dict() for m in messages])
 
     async def ainvoke(self, messages: List[Message]) -> Any:

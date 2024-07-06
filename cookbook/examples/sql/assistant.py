@@ -51,7 +51,7 @@ assistant_knowledge = CombinedKnowledgeBase(
         schema="ai",
         collection="sql_assistant_knowledge",
         db_url=db_url,
-        embedder=OpenAIEmbedder(model="text-embedding-3-small", dimensions=1536),
+        embedder=OpenAIEmbedder(model="text-embedding-3-small", dimensions=768),
     ),
     # 5 references are added to the prompt
     num_documents=5,

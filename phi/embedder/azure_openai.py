@@ -14,7 +14,7 @@ except ImportError:
 
 class AzureOpenAIEmbedder(Embedder):
     model: str = "text-embedding-ada-002"
-    dimensions: int = 1536
+    dimensions: int = 768
     encoding_format: Literal["float", "base64"] = "float"
     user: Optional[str] = None
     api_key: Optional[str] = getenv("AZURE_OPENAI_API_KEY")

@@ -4,6 +4,7 @@ from typing import Optional
 from textwrap import dedent
 from typing import List
 
+from root_server_ip import SERVER_IP
 from phi.assistant import Assistant
 from phi.tools import Toolkit
 from phi.tools.exa import ExaTools
@@ -260,7 +261,7 @@ def get_llm_os(
             vector_db=PgVector2(
                 db_url=db_url,
                 collection="llm_os_documents",
-                embedder=OpenAIEmbedder(model="text-embedding-3-small", dimensions=1536),
+                embedder=OpenAIEmbedder(model="text-embedding-3-small", dimensions=768),
             ),
             # 3 references are added to the prompt when searching the knowledge base
             num_documents=3,

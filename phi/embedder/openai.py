@@ -5,6 +5,8 @@ import requests
 from phi.embedder.base import Embedder
 from phi.utils.log import logger
 
+from root_server_ip import SERVER_IP
+
 try:
     from openai import OpenAI as OpenAIClient
     from openai.types.create_embedding_response import CreateEmbeddingResponse
@@ -13,21 +15,19 @@ except ImportError:
 
 
 class LMStudioEmbedder(Embedder):
-    model: str = "lmstudio-community/Meta-Llama-3-8B-Instruct-GGUF/Meta-Llama-3-8B-Instruct-Q5_K_M.gguf"
-    base_url: str = "http://192.168.0.119:1234/v1"
-    dimensions: int = 1536
+    model: str = "nomic-ai/nomic-embed-text-v1.5-GGUF/nomic-embed-text-v1.5.Q5_K_M.gguf"
+    base_url: str = SERVER_IP
+    dimensions: int = 768
     encoding_format: Literal["float", "base64"] = "float"
     user: Optional[str] = None
     request_params: Optional[Dict[str, Any]] = None
 
     def _response(self, text: str) -> Dict[str, Any]:
-        url = f"{self.base_url}/chat/completions"
+        url = f"{self.base_url}/embeddings"
         logger.debug(f"Enviando solicitação para {url} com texto: {text}")
         request_data = {
             "model": self.model,
-            "messages": [{"role": "user", "content": text}],
-            "max_tokens": 50,
-            "temperature": 0.7
+            "input": text
         }
         if self.request_params:
             request_data.update(self.request_params)
@@ -40,14 +40,20 @@ class LMStudioEmbedder(Embedder):
 
     def get_embedding(self, text: str) -> List[float]:
         response = self._response(text)
-        generated_text = response.get('choices', [{}])[0].get('message', {}).get('content', '')
         try:
-            # Simulação de um vetor de embedding; substituir por lógica real se disponível
-            embedding = [0.0] * self.dimensions
-            logger.debug(f"Texto gerado: {generated_text}")
+            # Extraindo o vetor de embedding da resposta
+            data = response.get('data', [])
+            if not data or 'embedding' not in data[0]:
+                raise ValueError("Resposta inválida, 'embedding' não encontrado.")
+            
+            embedding = data[0]['embedding']
+            if len(embedding) != self.dimensions:
+                raise ValueError(f"Dimensões incorretas: esperadas {self.dimensions}, obtidas {len(embedding)}")
+            
+            logger.debug(f"Embedding obtido: {embedding}")
             return embedding
         except Exception as e:
-            logger.warning(e)
+            logger.warning(f"Erro ao obter embedding: {e}")
             return []
 
     def get_embedding_and_usage(self, text: str) -> Tuple[List[float], Optional[Dict]]:
@@ -66,7 +72,7 @@ class OpenAIEmbedder(LMStudioEmbedder):
     user: Optional[str] = None
     api_key: Optional[str] = "lm-studio"
     organization: Optional[str] = None
-    base_url: str = "http://192.168.0.119:1234/v1"
+    base_url: str = SERVER_IP
     request_params: Optional[Dict[str, Any]] = None
     client_params: Optional[Dict[str, Any]] = None
     openai_client: Optional[OpenAIClient] = None

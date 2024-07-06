@@ -12,7 +12,7 @@ index_name = "thai-recipe-index"
 
 vector_db = PineconeDB(
     name=index_name,
-    dimension=1536,
+    dimension=768,
     metric="cosine",
     spec={"serverless": {"cloud": "aws", "region": "us-west-2"}},
     api_key=api_key,

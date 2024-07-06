@@ -29,7 +29,7 @@ def get_auto_rag_assistant(
             vector_db=PgVector2(
                 db_url=db_url,
                 collection="auto_rag_documents_openai",
-                embedder=OpenAIEmbedder(model="text-embedding-3-small", dimensions=1536),
+                embedder=OpenAIEmbedder(model="text-embedding-3-small", dimensions=768),
             ),
             # 3 references are added to the prompt
             num_documents=3,

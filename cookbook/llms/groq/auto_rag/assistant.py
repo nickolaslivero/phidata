@@ -25,7 +25,7 @@ def get_auto_rag_assistant(
     embedder = (
         OllamaEmbedder(model=embeddings_model, dimensions=768)
         if embeddings_model == "nomic-embed-text"
-        else OpenAIEmbedder(model=embeddings_model, dimensions=1536)
+        else OpenAIEmbedder(model=embeddings_model, dimensions=768)
     )
     # Define the embeddings table based on the embeddings model
     embeddings_table = (

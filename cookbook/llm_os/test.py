@@ -1,10 +1,10 @@
+from root_server_ip import SERVER_IP
 
-"""
 # Chat with an intelligent assistant in your terminal
 from openai import OpenAI
 
 # Point to the local server
-client = OpenAI(base_url="http://192.168.0.119:1234/v1", api_key="lm-studio")
+client = OpenAI(base_url=SERVER_IP, api_key="lm-studio")
 
 history = [
     {"role": "system", "content": "You are an intelligent assistant. You always provide well-reasoned answers that are both correct and helpful."},
@@ -41,7 +41,7 @@ while True:
 """
 import requests
 
-base_url = "http://192.168.0.119:1234/v1"
+base_url = SERVER_IP
 
 endpoints = [
     "models",
@@ -61,3 +61,4 @@ for endpoint in endpoints:
     except Exception as e:
         print(f"Erro ao acessar {url}: {e}")
 
+"""

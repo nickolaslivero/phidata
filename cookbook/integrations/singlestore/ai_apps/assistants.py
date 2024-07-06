@@ -55,7 +55,7 @@ def get_rag_assistant(
                     collection="rag_documents_openai",
                     schema=DATABASE,
                     db_engine=db_engine,
-                    embedder=OpenAIEmbedder(model="text-embedding-3-small", dimensions=1536),
+                    embedder=OpenAIEmbedder(model="text-embedding-3-small", dimensions=768),
                 ),
                 num_documents=num_documents,
             ),
@@ -156,7 +156,7 @@ def get_research_assistant(
                 collection="research_documents_openai",
                 schema=DATABASE,
                 db_engine=db_engine,
-                embedder=OpenAIEmbedder(model="text-embedding-3-small", dimensions=1536),
+                embedder=OpenAIEmbedder(model="text-embedding-3-small", dimensions=768),
             ),
             num_documents=num_documents,
         )
