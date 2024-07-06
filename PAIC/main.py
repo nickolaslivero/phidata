@@ -15,7 +15,7 @@ def execute_command():
             audio = recognizer.listen(source)
             command = recognizer.recognize_google(audio, language="pt-BR").lower()
             print(f"Command: {command}")
-            return command        
+            return command
     except sr.UnknownValueError as e:
         print(f"Could not understand the audio; {e}")
     except sr.RequestError as e:
@@ -51,9 +51,6 @@ def user_voice_command():
             result = generate_content(command)
             engine.say(result)
             engine.runAndWait()
-
-            
-               
             if "horas" in command:
                 print("buscando horas...")
                 current_time = datetime.datetime.now().strftime("%H:%M")
@@ -96,7 +93,7 @@ def user_voice_command():
                 engine.say("Até logo!")
                 engine.runAndWait()
                 break
-                
-""" 
+
+"""
 
 user_voice_command()
