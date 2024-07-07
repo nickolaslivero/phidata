@@ -4,7 +4,6 @@ from typing import Optional
 from textwrap import dedent
 from typing import List
 
-from root_server_ip import SERVER_IP
 from phi.assistant import Assistant
 from phi.tools import Toolkit
 from phi.tools.exa import ExaTools

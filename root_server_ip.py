@@ -1,1 +1,1 @@
-SERVER_IP = "http://172.25.208.1:1234/v1"
+SERVER_IP = "http://localhost:1234/v1"
