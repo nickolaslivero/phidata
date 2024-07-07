@@ -1,0 +1,15 @@
+pyttsx3
+datetime
+wikipedia
+pywhatkit
+pyaudio
+SpeechRecognition
+streamlit
+Pillow
+google
+google-generativeai
+openai
+torch
+transformers
+pyautogui
+selenium
